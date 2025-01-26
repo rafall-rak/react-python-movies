@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 
 export default function MovieForm(props) {
     const [title, setTitle] = useState('');
@@ -11,7 +11,7 @@ export default function MovieForm(props) {
         if (title.length < 5) {
             return alert('Tytuł jest za krótki');
         }
-        props.onMovieSubmit({title, year, director, description});
+        props.onMovieSubmit({ title, year, director, description });
         setTitle('');
         setYear('');
         setDirector('');
@@ -22,19 +22,19 @@ export default function MovieForm(props) {
         <h2>Add movie</h2>
         <div>
             <label>Tytuł</label>
-            <input type="text" value={title} onChange={(event) => setTitle(event.target.value)}/>
+            <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
         </div>
         <div>
             <label>Year</label>
-            <input type="text" value={year} onChange={(event) => setYear(event.target.value)}/>
+            <input type="text" value={year} onChange={(event) => setYear(event.target.value)} />
         </div>
         <div>
             <label>Director</label>
-            <input type="text" value={director} onChange={(event) => setDirector(event.target.value)}/>
+            <input type="text" value={director} onChange={(event) => setDirector(event.target.value)} />
         </div>
         <div>
             <label>Description</label>
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)}/>
+            <textarea value={description} onChange={(event) => setDescription(event.target.value)} />
         </div>
         <button>{props.buttonLabel || 'Submit'}</button>
     </form>;
