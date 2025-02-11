@@ -1,0 +1,27 @@
+import uuid
+import spacy
+from qdrant_client import QdrantClient
+from qdrant_client.models import PointStruct
+from qdrant_client.http.models import Distance, VectorParams
+
+COLLECTION_NAME = "movies"
+
+nlp = spacy.load("pl_core_news_lg")
+qdrant_client = QdrantClient(host="localhost", port=6333)
+
+if not qdrant_client.collection_exists(COLLECTION_NAME):
+    qdrant_client.create_collection(
+        collection_name=COLLECTION_NAME,
+        vectors_config=VectorParams(size=300, distance=Distance.COSINE),
+    )
+
+movie_title = "Indiana Jones i Poszukiwacze Zaginionej Arki"
+doc = nlp(movie_title)
+qdrant_client.upsert(
+    collection_name=COLLECTION_NAME,
+    wait=True,
+    points=[
+        PointStruct(id=str(uuid.uuid4()), vector=doc.vector, payload={
+                    "movie": {"title": movie_title}})
+    ],
+)

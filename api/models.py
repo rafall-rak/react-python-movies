@@ -2,20 +2,25 @@ from peewee import *
 
 from database import db
 
+
 class BaseModel(Model):
     class Meta:
         database = db
 
+
 class Actor(BaseModel):
     name = CharField()
     surname = CharField()
+
 
 class Movie(BaseModel):
     title = CharField()
     director = CharField()
     year = IntegerField()
     description = TextField()
+    embedding_id = CharField(null=True)
     actors = ManyToManyField(Actor, backref='movies')
+
 
 ActorMovie = Movie.actors.get_through_model()
 
