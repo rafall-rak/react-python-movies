@@ -42,7 +42,7 @@ class MovieCreate(MovieBase):
     pass
 
 
-class (Movie(MovieBase):
+class Movie(MovieBase):
     id: int
     actors: List[Actor] = []
 
