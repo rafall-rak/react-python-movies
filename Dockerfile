@@ -11,6 +11,9 @@ FROM python:3.9
 COPY --from=frontend /var/app/ui/build /var/app/ui/build
 COPY api/requirements.txt /var/app/api/requirements.txt
 WORKDIR /var/app/api
+RUN pip install -U pip setuptools wheel
+RUN pip install -U spacy
+RUN python -m spacy download pl_core_news_lg
 RUN pip install --no-cache-dir --upgrade -r /var/app/api/requirements.txt
 COPY api /var/app/api
 CMD ["uvicorn", "main:app", "--port", "80", "--host", "0.0.0.0"]
