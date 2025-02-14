@@ -4,3 +4,8 @@ services:
     image: qdrant/qdrant:v1.13.1
     ports:
       - 6333:6333
+  react-python-movies:
+    container_name: react-python-movies
+    image: rafal-rak/react-python-movies:1.0
+    ports:
+      - 80:80

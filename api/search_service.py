@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import spacy
@@ -10,10 +11,14 @@ from models import Movie
 
 class SearchService:
     COLLECTION_NAME = "movies"
+    QDRANT_HOST_ENV = 'QDRANT_HOST'
+    QDRANT_PORT_ENV = 'QDRANT_PORT'
 
     def __init__(self):
         self.nlp = spacy.load("pl_core_news_lg")
-        self.qdrant_client = QdrantClient(host="localhost", port=6333)
+        host = os.getenv(self.QDRANT_HOST_ENV, default="qdrant")
+        port = os.getenv(self.QDRANT_PORT_ENV, default="6333")
+        self.qdrant_client = QdrantClient(host=host, port=port)
 
         if not self.qdrant_client.collection_exists(self.COLLECTION_NAME):
             self.qdrant_client.create_collection(
