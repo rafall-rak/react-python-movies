@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import ActorForm from "./ActorForm";
 
 export default function MovieForm(props) {
@@ -9,7 +9,7 @@ export default function MovieForm(props) {
     const [actors, setActors] = useState([]);
 
     function handleActorChange(providedActor) {
-        console.log({ before: actors });
+        console.log({before: actors});
         var newObj = [...actors].map((actor) => {
             if (actor.idx === providedActor.idx) {
                 return providedActor
@@ -22,14 +22,9 @@ export default function MovieForm(props) {
 
     function addActorFormItem() {
         const actorsCount = actors.length;
-        setActors([
-            ...actors,
-            {
-                idx: actorsCount,
-                firstName: '',
-                lastName: ''
-            }
-        ]);
+        setActors([...actors, {
+            idx: actorsCount, name: '', surname: ''
+        }]);
     }
 
     function addMovie(event) {
@@ -37,7 +32,10 @@ export default function MovieForm(props) {
         if (title.length < 5) {
             return alert('Tytuł jest za krótki');
         }
-        props.onMovieSubmit({ title, year, director, description });
+        const mapped_actors = actors.map((actor) => ({name: actor.name, surname: actor.surname}))
+        props.onMovieSubmit({
+            title, year, director, description, actors: mapped_actors
+        });
         setTitle('');
         setYear('');
         setDirector('');
@@ -47,27 +45,34 @@ export default function MovieForm(props) {
 
     return <form onSubmit={addMovie}>
         <h2>Add movie</h2>
-        <div>
-            <label>Tytuł</label>
-            <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
-        </div>
-        <div>
-            <label>Year</label>
-            <input type="text" value={year} onChange={(event) => setYear(event.target.value)} />
-        </div>
-        <div>
-            <label>Director</label>
-            <input type="text" value={director} onChange={(event) => setDirector(event.target.value)} />
-        </div>
-        <div>
-            <label>Description</label>
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} />
-        </div>
-        <h3>Actors</h3>
         <div className="row">
+            <div className="column">
+                <label>Title</label>
+                <input type="text" value={title} onChange={(event) => setTitle(event.target.value)}/>
+            </div>
+        </div>
+        <div className="row">
+            <div className="column">
+                <label>Director</label>
+                <input type="text" value={director} onChange={(event) => setDirector(event.target.value)}/>
+            </div>
+            <div className="column">
+                <label>Year</label>
+                <input type="text" value={year} onChange={(event) => setYear(event.target.value)}/>
+            </div>
+        </div>
+        <div className="row">
+            <div className="column">
+                <label>Description</label>
+                <textarea value={description} onChange={(event) => setDescription(event.target.value)}/>
+            </div>
+        </div>
+        <div className="row">
+            <h3>Actors</h3>
             <button className="button button-clear" type="button" onClick={addActorFormItem}>Next actor</button>
         </div>
-        <ActorForm addActorFormItem={addActorFormItem} handleActorChange={handleActorChange} actors={actors} />
+        <ActorForm handleActorChange={handleActorChange} actors={actors}/>
         <button>{props.buttonLabel || 'Submit'}</button>
-    </form>;
+    </form>
+        ;
 }

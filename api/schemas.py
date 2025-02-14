@@ -35,16 +35,16 @@ class MovieBase(BaseModel):
     year: int
     director: str
     description: Union[str, None] = None
-    embedding_id: Union[str, None] = None
 
 
 class MovieCreate(MovieBase):
+    actors: List[ActorCreate] = None
     pass
 
 
 class Movie(MovieBase):
     id: int
-    actors: List[Actor] = []
+    actors: List[Actor] = None
 
     class Config:
         orm_mode = True

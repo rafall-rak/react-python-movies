@@ -1,8 +1,9 @@
 import uuid
+
 import spacy
 from qdrant_client import QdrantClient
+from qdrant_client.http.models import Distance, VectorParams, QueryResponse
 from qdrant_client.models import PointStruct, PointIdsList
-from qdrant_client.http.models import Distance, VectorParams
 
 from models import Movie
 
@@ -21,13 +22,26 @@ class SearchService:
                     size=300, distance=Distance.COSINE),
             )
 
+    def search_movies(self, search_query: str, limit: int) -> list[int]:
+        """
+        Finds movies best matching search_query using cosine vector similarity search
+        """
+        doc = self.nlp(search_query)
+        search_response: QueryResponse = self.qdrant_client.query_points(
+            collection_name=self.COLLECTION_NAME,
+            query=doc.vector,
+            with_payload=True,
+            limit=limit,
+        )
+        return [scored_point.payload["movie"]["id"] for scored_point in search_response.points]
+
     def index_movie(self, movie: Movie) -> str:
         """
         Indexes movies by title as embedding vectors
 
         Returns: embedding_id: str
         """
-        doc = self.nlp(movie.title+" "+movie.director+" "+movie.description)
+        doc = self.nlp(movie.title + " " + movie.director + " " + movie.description)
         embedding_id = uuid.uuid4().hex
         self.qdrant_client.upsert(
             collection_name=self.COLLECTION_NAME,
@@ -48,7 +62,7 @@ class SearchService:
         """
         self.qdrant_client.delete(
             collection_name=self.COLLECTION_NAME,
-            points_selector=PointsIdList(
+            points_selector=PointIdsList(
                 points=[movie.embedding_id],
             )
         )
